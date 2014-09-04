@@ -29,7 +29,7 @@ app.register_blueprint(auth_module)
 
 # Admin
 from app.admin import controllers as admin_controllers
-admin_module = Admin(app, 'GoGo Cal Admin')
+admin_module = Admin(app, 'Super Awesome Admin')
 admin_controllers.register(admin_module)
 
 
