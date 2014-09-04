@@ -1,0 +1,23 @@
+{% macro render_field(field, placeholder=None) %}
+{% if field.errors %}
+<div>
+{% elif field.flags.error %}
+<div>
+{% else %}
+<div>
+{% endif %}
+    {% set css_class = 'form-control ' + kwargs.pop('class', '') %}
+    {{ field(class=css_class, placeholder=placeholder, **kwargs) }}
+</div>
+{% endmacro %}
+
+<div>
+  <div>
+    {% if user_id %}
+    <div>
+    {{ user_id }}<br>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
