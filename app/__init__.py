@@ -3,6 +3,8 @@ from flask import Flask, render_template
 from flask.ext.admin import Admin
 from flask.ext.sqlalchemy import SQLAlchemy
 
+from flask_oauthlib.provider import OAuth2Provider
+
 # Define the WSGI application object
 app = Flask(__name__)
 
@@ -13,6 +15,8 @@ app.config.from_object('config')
 # by modules and controllers
 db = SQLAlchemy(app)
 
+oauth = OAuth2Provider(app)
+
 # Sample HTTP error handling
 @app.errorhandler(404)
 def not_found(error):
@@ -20,9 +24,11 @@ def not_found(error):
 
 # Import a module / component using its blueprint handler variable (mod_auth)
 from app.auth.controllers import mod_auth as auth_module
+from app.auth.oauth2 import mod_oauth as oauth_module
 
 # Register blueprint(s)
 app.register_blueprint(auth_module)
+app.register_blueprint(oauth_module)
 # app.register_blueprint(xyz_module)
 # ..
 
