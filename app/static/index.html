@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en" ng-app="app">
+  <head>
+    <title>Auth App</title>
+    <link href="/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/build/main.css" rel="stylesheet">
+  </head>
+  <body>
+
+    <div class="container">
+      <div ng-controller="AlertDemoCtrl">
+        <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+      </div>
+
+      <div class="view" ng-view></div>
+    </div>
+
+    <script src="/lib/angular/angular.js"></script>
+    <script src="/lib/angular-route/angular-route.js"></script>
+    <script src="/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+
+    <script src="/build/main.js"></script>
+    <script src="http://172.28.128.3:2222/livereload.js"></script>
+  </body>
+</html>

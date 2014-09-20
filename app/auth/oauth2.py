@@ -15,7 +15,7 @@ from werkzeug.security import gen_salt
 
 mod_oauth = Blueprint('oauth', __name__, url_prefix='/oauth')
 
-REDIRECT_URI = 'http://172.28.128.3:8881/authorized'
+REDIRECT_URI = 'http://172.28.128.3:8880/webauth/authorized'
 
 
 def try_login(form):

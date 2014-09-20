@@ -1,0 +1,23 @@
+{
+  "name": "static",
+  "version": "0.0.0",
+  "homepage": "https://github.com/theRealWardo/flask",
+  "authors": [
+    "Matt Ward <contact@mwdesigns.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "3.1.1",
+    "angular": "1.2.10",
+    "angular-bootstrap": "~0.11.0",
+    "angular-route": "1.2.10",
+    "hello": "~1.1.3"
+  }
+}
