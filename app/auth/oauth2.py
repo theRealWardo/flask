@@ -15,7 +15,7 @@ from werkzeug.security import gen_salt
 
 mod_oauth = Blueprint('oauth', __name__, url_prefix='/oauth')
 
-REDIRECT_URI = 'http://172.28.128.3:8880/webauth/authorized'
+REDIRECT_URI = 'http://172.28.128.3:8880/webauth/complete'
 
 
 def try_login(form):
@@ -23,6 +23,15 @@ def try_login(form):
     user = User.query.filter_by(email=form.get('email')).first()
     if user and check_password_hash(user.password, form.get('password')):
       return user
+  return None
+
+
+@oauth.usergetter
+def get_user(username, password, client, request,
+    *args, **kwargs):
+  user = User.query.filter_by(email=username).first()
+  if user and check_password_hash(user.password, password):
+    return user
   return None
 
 
@@ -45,7 +54,15 @@ def load_grant(client_id, code):
 
 @oauth.grantsetter
 def save_grant(client_id, code, oauth_request, *args, **kwargs):
-  user = try_login(dict(oauth_request.decoded_body)) or current_user()
+  if 'password' in dict(oauth_request.uri_query_params):
+    # GET
+    user = try_login(dict(oauth_request.uri_query_params))
+  elif 'password' in dict(oauth_request.decoded_body):
+    # POST
+    user = try_login(dict(oauth_request.decoded_body))
+  else:
+    # 3rd party web
+    user = current_user()
   # decide the expires time yourself
   expires = datetime.utcnow() + timedelta(seconds=100)
   grant = Grant(
@@ -105,7 +122,12 @@ def access_token():
 @mod_oauth.route('/authorize', methods=['GET', 'POST'])
 @oauth.authorize_handler
 def authorize(*args, **kwargs):
-  user = try_login(request.form) or current_user()
+  user = try_login(request.values) or current_user()
+  if request.values.get('firstparty') == 'yes':
+    if user:
+      return True
+    else:
+      return False
   if not user:
     return redirect('/')
   if request.method == 'GET':

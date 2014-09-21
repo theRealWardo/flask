@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngRoute', 'ui.bootstrap']).config(
+angular.module('app', ['ngRoute', 'ui.bootstrap']).config(
 ['$routeProvider',
 function($routeProvider) {
 
@@ -17,38 +17,13 @@ function($routeProvider) {
 
 }]);
 
-
-
 angular.module('app').controller('AlertDemoCtrl',
-['$scope',
-function($scope) {
+['$scope', 'alertsService',
+function($scope, alertsService) {
 
-  $scope.alerts = [
-    /*
-    {
-      type: 'danger',
-      msg: 'Oh snap! Change a few things up and try submitting again.'
-    },
-    {
-      msg: 'Welcome! Hope you like cookies'
-    },
-    {
-      type: 'success',
-      msg: 'Well done! You successfully read this important alert message.'
-    }
-    */
-  ];
-
-  $scope.addAlert = function() {
-    $scope.alerts.push({msg: 'Another alert!'});
-  };
-
-  $scope.closeAlert = function(index) {
-    $scope.alerts.splice(index, 1);
-  };
+  $scope.alerts = alertsService.alerts;
 
 }]);
-
 
 angular.module('app').controller('LoginController',
 ['$scope', '$location', 'loginService',
@@ -62,7 +37,7 @@ function($scope, $location, loginService) {
 
 }]);
 
-app.controller('SignupController',
+angular.module('app').controller('SignupController',
 ['$scope', '$location', 'loginService',
 function($scope, $location, loginService) {
 
@@ -74,7 +49,45 @@ function($scope, $location, loginService) {
 
 }]);
 
-angular.module('app').service('loginService', function() {
+
+angular.module('app').service('alertsService',
+function() {
+
+  this.alerts = [];
+
+  this.clear = function() {
+    // Angular holds a deep reference to the array so we need to work
+    // with that object. Clear via popping all the alerts out of the array.
+    while (this.alerts.length) {
+      this.alerts.pop();
+    }
+  };
+
+  this.danger = function(message) {
+    this.alerts.push({
+      type: 'danger',
+      msg: message
+    });
+  };
+
+  this.success = function(message) {
+    this.alerts.push({
+      type: 'success',
+      msg: message
+    });
+  };
+
+  this.add = function(message) {
+    this.alerts.push({
+      msg: message
+    });
+  };
+
+});
+
+angular.module('app').service('loginService',
+['$http', 'alertsService',
+function($http, alertsService) {
 
   this.name = '';
   this.email = '';
@@ -82,12 +95,54 @@ angular.module('app').service('loginService', function() {
   this.confirmPassword = '';
   this.pending = false;
 
+  // Successful login will provide these values.
+  this.accessToken = null;
+  this.refreshToken = null;
+
   this.login = function() {
     this.pending = true;
+    alertsService.clear();
+    $http.post('/webauth/signin', {
+        email: this.email,
+        password: this.password
+    }).
+    success(angular.bind(this, this.onLogin)).
+    error(angular.bind(this, this.onError));
+  };
+
+  this.onLogin = function(data, status, headers, config) {
+    this.pending = false;
+    if (data['access_token']) {
+      this.accessToken = data['access_token'];
+      this.refreshToken = data['refresh_token'];
+    } else {
+      alertsService.danger(data['error']);
+    }
   };
 
   this.signup = function() {
     this.pending = true;
+    alertsService.clear();
+    $http.post('/auth/signup', {
+        name: this.name,
+        password: this.password
+    }).
+    success(angular.bind(this, this.onSignup)).
+    error(angular.bind(this, this.onError));
   };
 
-});
+  this.onSignup = function(data, status, headers, config) {
+    this.pending = false;
+    if (data['status'] == 'ok') {
+      this.login();
+    } else {
+      alertsService.danger(data['error']);
+    }
+  };
+
+  this.onError = function(data, status, headers, config) {
+    console.log(data);
+    this.pending = false;
+  };
+
+}]);

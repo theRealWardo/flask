@@ -24,7 +24,7 @@ def signin():
     if user and check_password_hash(user.password, form.password.data):
       session['user_id'] = user.id
       flash('Welcome %s' % user.name)
-      return redirect(url_for('auth.home'))
+      return redirect(url_for('old_auth.home'))
   flash('Wrong email or password', 'error-message')
   return render_template("auth/signin.html", form=form, user_id=session.get('user_id'))
 
@@ -41,12 +41,12 @@ def signup():
     s = db.session()
     s.add(user)
     s.commit()
-    return redirect(url_for('auth.signin'))
+    return redirect(url_for('old_auth.signin'))
   return render_template("auth/signup.html", form=form)
 
 # Set the route and accepted methods
 @mod_old_auth.route('/home/', methods=['GET'])
 def home():
   if not session.get('user_id'):
-    return redirect(url_for('auth.signin'))
+    return redirect(url_for('old_auth.signin'))
   return render_template("auth/home.html", user_id=session['user_id'])

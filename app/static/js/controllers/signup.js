@@ -1,4 +1,4 @@
-app.controller('SignupController',
+angular.module('app').controller('SignupController',
 ['$scope', '$location', 'loginService',
 function($scope, $location, loginService) {
 

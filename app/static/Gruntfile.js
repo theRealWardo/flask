@@ -26,11 +26,11 @@ module.exports = function(grunt) {
     },
     concat: {
       build: {
-        src: ['js/**/*.js', 'js/*.js'],
+        src: ['js/*.js', 'js/**/*.js', '!js/*_test.js', '!js/**/*_test.js'],
         dest: 'build/<%= pkg.name %>.js',
       },
       dist: {
-        src: ['js/*.js', 'js/**/*.js', 'build/templates.js'],
+        src: ['js/*.js', 'js/**/*.js', '!js/*_test.js', '!js/**/*_test.js', 'build/templates.js'],
         dest: 'build/<%= pkg.name %>-tmpl.js',
       },
     },

@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngRoute', 'ui.bootstrap']).config(
+angular.module('app', ['ngRoute', 'ui.bootstrap']).config(
 ['$routeProvider',
 function($routeProvider) {
 
@@ -16,5 +16,3 @@ function($routeProvider) {
       });
 
 }]);
-
-

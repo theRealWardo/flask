@@ -52,14 +52,17 @@ def static_build(path):
 
 
 # Blueprint based modules.
-from app.auth.controllers import mod_auth as auth_module
+from app.auth.auth import mod_auth as auth_module
 app.register_blueprint(auth_module)
+
+from app.auth.old_auth import mod_old_auth as old_auth_module
+app.register_blueprint(old_auth_module)
 
 from app.auth.oauth2 import mod_oauth as oauth_module
 app.register_blueprint(oauth_module)
 
-from app.auth.web import mod_auth_web as web_module
-app.register_blueprint(web_module)
+from app.auth.web import mod_auth_web as web_auth_module
+app.register_blueprint(web_auth_module)
 
 
 # Flask-Admin module.
@@ -67,5 +70,8 @@ from app.admin import controllers as admin_controllers
 admin_module = Admin(app, 'Super Awesome Admin')
 admin_controllers.register(admin_module)
 
+# Monkey-patch wtforms to support JSON.
+import wtforms_json
+wtforms_json.init()
 
 db.create_all()
