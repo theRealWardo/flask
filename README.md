@@ -12,7 +12,7 @@ To get this app running set up your environment with:
 Then install the requirements:
 `pip install -r requirements.txt`
 
-Finall, run the app:
+Finally, run the app:
 `python run.py`
 
 To get the index page to load you need Node.js and Bower then you can run.
