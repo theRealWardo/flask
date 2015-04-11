@@ -19,7 +19,7 @@ To get the index page to load you need Node.js and Bower then you can run.
 `cd app/static && npm install` then you can run `npm test` to run the tests.
 Note that you'll have to visit the Karma URL and connect a browser (usually
 Karma starts a server on localhost:9876).
-See [angular-seed][https://github.com/angular/angular-seed]
+See [angular-seed](https://github.com/angular/angular-seed)
 for more details on how to test the frontend code, but note that webdriver tests
 were not brought into this project.
 
